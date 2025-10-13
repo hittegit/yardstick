@@ -20,6 +20,6 @@ func All() []Check {
 		LicenseCheck{},   // Ensures LICENSE file is present
 		GitIgnoreCheck{}, // Ensures .gitignore covers common entries
 		ChangelogCheck{}, // Ensures CHANGELOG.md exists
-		GoModCheck{},     // Checks presence of go.mod for Go projects
+		ManifestCheck{},  // Detect project ecosystem by scanning for common manifests
 	}
 }

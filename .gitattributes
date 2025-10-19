@@ -1,0 +1,17 @@
+# Normalize line endings and enforce LF in the working tree for key text files
+* text=auto
+
+# Go sources and module files: always LF
+*.go     text eol=lf
+go.mod   text eol=lf
+go.sum   text eol=lf
+
+# CI and configs
+*.yml    text eol=lf
+*.yaml   text eol=lf
+Dockerfile text eol=lf
+
+# Documentation and JSON
+*.md     text eol=lf
+*.json   text eol=lf
+

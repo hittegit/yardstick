@@ -1,7 +1,7 @@
-# Top level EditorConfig
+; Top-level EditorConfig for yardstick
 root = true
 
-# Defaults for all files
+; Defaults for all files
 [*]
 charset = utf-8
 end_of_line = lf
@@ -10,13 +10,21 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 2
 
-# Go uses tabs, gofmt controls layout
+; Go: gofmt uses tabs; editors show width 8
 [*.go]
 indent_style = tab
-# Tab width is cosmetic in editors
 tab_width = 8
 
-# YAML files use 2 spaces
+; Go module files
+[go.mod]
+indent_style = space
+indent_size = 2
+
+[go.sum]
+indent_style = space
+indent_size = 2
+
+; YAML (CI, configs)
 [*.yml]
 indent_style = space
 indent_size = 2
@@ -25,16 +33,36 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
-# JSON files use 2 spaces
+; JSON (tools, configs)
 [*.json]
 indent_style = space
 indent_size = 2
+insert_final_newline = true
 
-# Markdown keeps intentional trailing spaces
+; Markdown: keep intentional trailing spaces (line breaks)
 [*.md]
 trim_trailing_whitespace = false
 
-# Makefiles require tabs
+; Shell scripts
+[*.sh]
+indent_style = space
+indent_size = 2
+
+; PowerShell scripts
+[*.ps1]
+indent_style = space
+indent_size = 2
+
+; Dockerfiles
+[Dockerfile]
+indent_style = space
+indent_size = 2
+
+; TOML configs (future ecosystems)
+[*.toml]
+indent_style = space
+indent_size = 2
+
+; Makefiles require hard tabs
 [Makefile]
 indent_style = tab
-

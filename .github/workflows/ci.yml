@@ -75,7 +75,7 @@ jobs:
         run: go test -v ./... -coverprofile=coverage.out
 
       - name: Build
-        run: go build ./...
+        run: go build -buildvcs=false ./...
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4
@@ -97,6 +97,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Mark workspace as safe for Git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Show Go version
         run: go version
 
@@ -115,7 +119,7 @@ jobs:
         run: go test -v ./... -coverprofile=coverage.out
 
       - name: Build
-        run: go build ./...
+        run: go build -buildvcs=false ./...
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4

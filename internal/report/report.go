@@ -6,7 +6,7 @@ import (
 	"sort"
 	"text/tabwriter"
 
-	"github.com/erikhitt/yardstick/internal/checks"
+	"github.com/hittegit/yardstick/internal/checks"
 )
 
 // Package report converts raw findings into human or machine friendly outputs.

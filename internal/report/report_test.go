@@ -1,0 +1,63 @@
+package report
+
+import (
+    "bytes"
+    "regexp"
+    "strings"
+    "testing"
+
+    "github.com/hittegit/yardstick/internal/checks"
+)
+
+func TestFromFindings_Counts(t *testing.T) {
+    fs := []checks.Finding{
+        {Check: "a", Level: checks.LevelWarn},
+        {Check: "b", Level: checks.LevelWarn},
+        {Check: "c", Level: checks.LevelInfo},
+        {Check: "d", Level: checks.LevelError},
+    }
+    out := FromFindings(fs)
+    if out.Counts.Info != 1 || out.Counts.Warn != 2 || out.Counts.Error != 1 {
+        t.Fatalf("unexpected counts: %+v", out.Counts)
+    }
+}
+
+// normalize splits a tabwriter line into columns by collapsing runs of 2+ spaces.
+func normalize(line string) []string {
+    line = strings.TrimSpace(line)
+    re := regexp.MustCompile(`\s{2,}`)
+    line = re.ReplaceAllString(line, "\t")
+    return strings.Split(line, "\t")
+}
+
+func TestPrintTable_SortsAndFormats(t *testing.T) {
+    fs := []checks.Finding{
+        {Check: "b", Level: checks.LevelWarn, Path: "z", Message: "m2"},
+        {Check: "a", Level: checks.LevelInfo, Path: "b", Message: "m1"},
+        {Check: "a", Level: checks.LevelWarn, Path: "a", Message: "m0"},
+    }
+    var buf bytes.Buffer
+    PrintTable(&buf, fs)
+    out := buf.String()
+    lines := strings.Split(strings.TrimSpace(out), "\n")
+    if len(lines) != 4 { // header + 3 rows
+        t.Fatalf("unexpected number of lines: %d\n%s", len(lines), out)
+    }
+    headerCols := normalize(lines[0])
+    if len(headerCols) < 5 || headerCols[0] != "CHECK" || headerCols[1] != "LEVEL" || headerCols[2] != "PATH" || headerCols[3] != "MESSAGE" || headerCols[4] != "FIXED" {
+        t.Fatalf("unexpected header columns: %#v (line: %q)", headerCols, lines[0])
+    }
+    // Sorted by check then path: a/a, a/b, b/z
+    row1 := normalize(lines[1])
+    row2 := normalize(lines[2])
+    row3 := normalize(lines[3])
+    if row1[0] != "a" || row1[2] != "a" {
+        t.Fatalf("unexpected first row columns: %#v", row1)
+    }
+    if row2[0] != "a" || row2[2] != "b" {
+        t.Fatalf("unexpected second row columns: %#v", row2)
+    }
+    if row3[0] != "b" || row3[2] != "z" {
+        t.Fatalf("unexpected third row columns: %#v", row3)
+    }
+}

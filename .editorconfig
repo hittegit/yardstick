@@ -1,0 +1,40 @@
+# Top level EditorConfig
+root = true
+
+# Defaults for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Go uses tabs, gofmt controls layout
+[*.go]
+indent_style = tab
+# Tab width is cosmetic in editors
+tab_width = 8
+
+# YAML files use 2 spaces
+[*.yml]
+indent_style = space
+indent_size = 2
+
+[*.yaml]
+indent_style = space
+indent_size = 2
+
+# JSON files use 2 spaces
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown keeps intentional trailing spaces
+[*.md]
+trim_trailing_whitespace = false
+
+# Makefiles require tabs
+[Makefile]
+indent_style = tab
+

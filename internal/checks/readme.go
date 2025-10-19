@@ -74,25 +74,17 @@ func (ReadmeCheck) Run(ctx context.Context, root string, opts Options) ([]Findin
 // defaultReadme provides a minimal README.md template scaffolded when missing.
 // This template includes all the key sections required by the ReadmeCheck.
 func defaultReadme() string {
-	return `# Project
-
-## Overview
-Short summary of the project purpose.
-
-## Installation
-```bash
-go install ./...
-```
-
-## Usage
-```bash
-project --help
-```
-
-## CI
-Describe how the CI/CD pipeline works and where reports are found.
-
-## License
-MIT
-`
+    // Avoid Markdown code fences in a Go raw string to prevent parser issues.
+    // Indent shell examples instead of using ``` blocks.
+    return "# Project\n\n" +
+        "## Overview\n" +
+        "Short summary of the project purpose.\n\n" +
+        "## Installation\n" +
+        "    go install ./...\n\n" +
+        "## Usage\n" +
+        "    project --help\n\n" +
+        "## CI\n" +
+        "Describe how the CI/CD pipeline works and where reports are found.\n\n" +
+        "## License\n" +
+        "MIT\n"
 }

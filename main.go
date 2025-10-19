@@ -9,9 +9,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/erikhitt/yardstick/internal/checks"
-	"github.com/erikhitt/yardstick/internal/report"
-	"github.com/erikhitt/yardstick/internal/scaffold"
+	"github.com/hittegit/yardstick/internal/checks"
+	"github.com/hittegit/yardstick/internal/report"
+	"github.com/hittegit/yardstick/internal/scaffold"
 )
 
 // Define command-line flags for configuration.

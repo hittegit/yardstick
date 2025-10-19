@@ -1,0 +1,84 @@
+# ------------------------------------------------------------------
+# Go build outputs
+# ------------------------------------------------------------------
+# go build and temporary binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Build directories
+/bin/
+/build/
+/dist/
+/tmp/
+/tmp-*/
+
+# Go build cache (normally outside repo, included here for safety)
+# Uncomment if your environment drops caches inside the repo
+# /.cache/
+/.cache/go-build/
+
+# Coverage and test artifacts
+coverage.out
+coverage.txt
+coverage/
+*.cov
+*.coverprofile
+
+# ------------------------------------------------------------------
+# Editors and IDEs
+# ------------------------------------------------------------------
+# VS Code settings and state
+.vscode/
+.vscode-test/
+*.code-workspace
+
+# JetBrains
+.idea/
+*.iml
+
+# Sublime, Vim, Emacs
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+.*.swp
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ------------------------------------------------------------------
+# OS files
+# ------------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# ------------------------------------------------------------------
+# Logs
+# ------------------------------------------------------------------
+*.log
+*.log.*
+
+# ------------------------------------------------------------------
+# Node and web tooling (optional, harmless in Go repos)
+# ------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+.svelte-kit/
+.next/
+.out/
+.cache/
+

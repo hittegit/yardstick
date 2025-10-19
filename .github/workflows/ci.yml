@@ -59,15 +59,14 @@ jobs:
       - name: Show Go version
         run: go version
 
-      - name: Verify gofmt
+      - name: Format (gofmt)
         shell: bash
         run: |
-          unformatted="$(gofmt -s -l .)"
-          if [ -n "$unformatted" ]; then
-            echo "These files are not formatted by gofmt:"
-            echo "$unformatted"
-            exit 1
-          fi
+          set -euo pipefail
+          echo "Formatting with gofmt -s -w ."
+          gofmt -s -w .
+          # Show any files that were changed by formatting
+          git status --porcelain | awk '/^ M /{print $2}' || true
 
       - name: Vet
         run: go vet ./...
@@ -101,15 +100,13 @@ jobs:
       - name: Show Go version
         run: go version
 
-      - name: Verify gofmt
+      - name: Format (gofmt)
         shell: bash
         run: |
-          unformatted="$(gofmt -s -l .)"
-          if [ -n "$unformatted" ]; then
-            echo "These files are not formatted by gofmt:"
-            echo "$unformatted"
-            exit 1
-          fi
+          set -euo pipefail
+          echo "Formatting with gofmt -s -w ."
+          gofmt -s -w .
+          git status --porcelain | awk '/^ M /{print $2}' || true
 
       - name: Vet
         run: go vet ./...

@@ -17,6 +17,7 @@ package checks
 func All() []Check {
     return []Check{
         ManifestCheck{},  // Detect project ecosystem by scanning for common manifests
+        StaticSiteCheck{}, // Validate minimal structure for static sites (e.g., Jekyll)
         ReadmeCheck{},    // Ensures README.md exists and has required sections
         LicenseCheck{},   // Ensures LICENSE file is present
         GitIgnoreCheck{}, // Ensures .gitignore covers common entries

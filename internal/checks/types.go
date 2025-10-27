@@ -40,8 +40,9 @@ type Finding struct {
 // Options contains runtime flags passed into each check.
 // Used to control whether a check should attempt auto-remediation.
 type Options struct {
-	// AutoFix indicates whether yardstick should attempt to fix simple issues automatically.
-	AutoFix bool
+    // AutoFix is reserved for potential future use. Yardstick is read-only
+    // and does not write; checks must not modify files regardless of this flag.
+    AutoFix bool
 }
 
 // Check is the interface that all yardstick checks must implement.

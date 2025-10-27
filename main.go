@@ -1,38 +1,48 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
-	"errors"
-	"flag"
-	"fmt"
-	"os"
-	"path/filepath"
+    "context"
+    "encoding/json"
+    "errors"
+    "flag"
+    "fmt"
+    "os"
+    "path/filepath"
 
-	"github.com/hittegit/yardstick/internal/checks"
-	"github.com/hittegit/yardstick/internal/report"
-	"github.com/hittegit/yardstick/internal/scaffold"
+    "github.com/hittegit/yardstick/internal/checks"
+    "github.com/hittegit/yardstick/internal/report"
 )
 
 // Define command-line flags for configuration.
 // These control how yardstick runs and what output format it uses.
 var (
-	flagFormat   = flag.String("format", "table", "output format: table or json")
-	flagPath     = flag.String("path", ".", "path to scan")
-	flagFix      = flag.Bool("fix", false, "attempt to auto-fix selected issues")
-	flagScaffold = flag.Bool("scaffold", false, "write common repo files if missing")
-	flagStrict   = flag.Bool("strict", false, "nonzero exit if any warn-level finding exists")
-	flagOnly     = flag.String("only", "", "comma-separated list of checks to run, empty means all")
-	flagList     = flag.Bool("list", false, "list available checks")
+    flagFormat   = flag.String("format", "table", "output format: table or json")
+    flagPath     = flag.String("path", ".", "path to scan")
+    flagStrict   = flag.Bool("strict", false, "nonzero exit if any warn-level finding exists")
+    flagOnly     = flag.String("only", "", "comma-separated list of checks to run, empty means all")
+    flagList     = flag.Bool("list", false, "list available checks")
+    flagVersion  = flag.Bool("version", false, "print version and exit")
+)
+
+// Build-time variables injected via -ldflags at release time.
+// Default values are for local development.
+var (
+    buildVersion = "dev"
+    buildCommit  = "none"
+    buildDate    = "unknown"
 )
 
 // main is the CLI entrypoint. It parses flags and executes the program logic.
 func main() {
-	flag.Parse()
-	if err := run(context.Background()); err != nil {
-		fmt.Fprintf(os.Stderr, "yardstick error: %v\n", err)
-		os.Exit(2)
-	}
+    flag.Parse()
+    if *flagVersion {
+        fmt.Printf("yardstick %s (commit %s, built %s)\n", buildVersion, buildCommit, buildDate)
+        return
+    }
+    if err := run(context.Background()); err != nil {
+        fmt.Fprintf(os.Stderr, "yardstick error: %v\n", err)
+        os.Exit(2)
+    }
 }
 
 // run performs the main logic of yardstick, executing checks and printing results.
@@ -60,16 +70,9 @@ func run(ctx context.Context) error {
 		}
 	}
 
-	// Optionally scaffold missing standard files like README.md or LICENSE.
-	if *flagScaffold {
-		if err := scaffold.Run(root); err != nil {
-			return fmt.Errorf("scaffold: %w", err)
-		}
-	}
-
-	// Run all registered checks (or a subset if specified).
-	var findings []checks.Finding
-	for _, c := range checks.All() {
+    // Run all registered checks (or a subset if specified).
+    var findings []checks.Finding
+    for _, c := range checks.All() {
 		// Skip any checks not listed in the --only flag.
 		if sel != nil {
 			if _, ok := sel[c.Key()]; !ok {
@@ -77,13 +80,13 @@ func run(ctx context.Context) error {
 			}
 		}
 
-		// Execute each check with optional autofix.
-		fs, err := c.Run(ctx, root, checks.Options{AutoFix: *flagFix})
-		if err != nil {
-			return fmt.Errorf("check %s: %w", c.Key(), err)
-		}
-		findings = append(findings, fs...)
-	}
+        // Execute each check; yardstick is read-only so AutoFix is ignored.
+        fs, err := c.Run(ctx, root, checks.Options{AutoFix: false})
+        if err != nil {
+            return fmt.Errorf("check %s: %w", c.Key(), err)
+        }
+        findings = append(findings, fs...)
+    }
 
 	// Render the report in the requested format.
 	switch *flagFormat {

@@ -7,7 +7,7 @@ import (
     "testing"
 )
 
-func TestChangelogCheck_Missing_NoFix(t *testing.T) {
+func TestChangelogCheck_Missing_ReadOnly(t *testing.T) {
     dir := t.TempDir()
     path := filepath.Join(dir, "CHANGELOG.md")
     fs, err := (ChangelogCheck{}).Run(context.Background(), dir, Options{})
@@ -18,22 +18,21 @@ func TestChangelogCheck_Missing_NoFix(t *testing.T) {
         t.Fatalf("expected warn for missing CHANGELOG.md, got %+v", fs)
     }
     if _, err := os.Stat(path); !os.IsNotExist(err) {
-        t.Fatalf("CHANGELOG.md should not be created without fix")
+        t.Fatalf("CHANGELOG.md should not be created")
     }
 }
 
-func TestChangelogCheck_Missing_WithFix(t *testing.T) {
+func TestChangelogCheck_Missing_NoWriteEvenWithFix(t *testing.T) {
     dir := t.TempDir()
     path := filepath.Join(dir, "CHANGELOG.md")
     fs, err := (ChangelogCheck{}).Run(context.Background(), dir, Options{AutoFix: true})
     if err != nil {
         t.Fatalf("run: %v", err)
     }
-    if len(fs) != 1 || !fs[0].Fixed {
-        t.Fatalf("expected fixed finding, got %+v", fs)
+    if len(fs) != 1 || fs[0].Fixed {
+        t.Fatalf("expected warn finding with Fixed=false, got %+v", fs)
     }
-    if _, err := os.Stat(path); err != nil {
-        t.Fatalf("expected CHANGELOG.md to be created: %v", err)
+    if _, err := os.Stat(path); !os.IsNotExist(err) {
+        t.Fatalf("CHANGELOG.md should not be created when AutoFix is true (read-only policy)")
     }
 }
-

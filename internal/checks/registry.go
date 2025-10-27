@@ -15,11 +15,11 @@ package checks
 // loaded, rather than automatically discovered, which improves predictability
 // and makes CI output easier to reason about.
 func All() []Check {
-	return []Check{
-		ReadmeCheck{},    // Ensures README.md exists and has required sections
-		LicenseCheck{},   // Ensures LICENSE file is present
-		GitIgnoreCheck{}, // Ensures .gitignore covers common entries
-		ChangelogCheck{}, // Ensures CHANGELOG.md exists
-		ManifestCheck{},  // Detect project ecosystem by scanning for common manifests
-	}
+    return []Check{
+        ManifestCheck{},  // Detect project ecosystem by scanning for common manifests
+        ReadmeCheck{},    // Ensures README.md exists and has required sections
+        LicenseCheck{},   // Ensures LICENSE file is present
+        GitIgnoreCheck{}, // Ensures .gitignore covers common entries
+        ChangelogCheck{}, // Ensures CHANGELOG.md exists
+    }
 }

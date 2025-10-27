@@ -1,16 +1,21 @@
 # Yardstick
 
-A small Go CLI that scans repositories for hygiene issues, emits readable reports, and can scaffold safe defaults on request. It works across ecosystems by detecting common manifests, so it is not Go only.
+![CI](https://github.com/hittegit/yardstick/actions/workflows/ci.yml/badge.svg)
+
+A small Go CLI that scans repositories for hygiene issues and emits readable reports. It works across ecosystems by detecting common manifests, so it is not Go only.
+
+## Overview
+Yardstick runs a fast set of repository hygiene checks and renders machine or human friendly reports. It is ecosystem-aware, so you can drop it into Go, Node, Python, Rust, or static site repositories and get useful results with zero configuration. Yardstick is read-only and never writes files.
 
 ## Features
 - Neutral ecosystem detection via a Manifest check
 - Built in hygiene checks for README, LICENSE, .gitignore, and CHANGELOG
-- Auto fix mode to create safe defaults, never overwrites existing files
+- Read-only by default; provides clear guidance to fix issues
 - Two output formats, table for humans and JSON for machines
 - Strict mode to make warnings fail CI when desired
 - Slim GitHub Actions CI workflow with short artifact retention
 
-## Install
+## Installation
 You need Go 1.22 or newer.
 
 - From source in this repo
@@ -30,7 +35,13 @@ GO111MODULE=on go install github.com/hittegit/yardstick@latest
 yardstick -h
 ```
 
-## Quick Start
+### Version
+You can print the version embedded at build time:
+```bash
+yardstick -version
+```
+
+## Usage
 Run yardstick in any repository root.
 
 ```bash
@@ -43,12 +54,6 @@ yardstick -format json
 # Fail on warnings too
 yardstick -strict
 
-# Create safe defaults for common files if missing
-yardstick -fix
-
-# Write a few common support files if missing
-yardstick -scaffold
-
 # Only run a subset of checks
 yardstick -only readme,license
 
@@ -59,13 +64,13 @@ yardstick -list
 ## What It Checks
 - Manifest: Detects common manifests such as `go.mod`, `package.json`, `pyproject.toml`, `Cargo.toml`, and more. Reports info on a match, reports a warning if none are found
 - README: Ensures `README.md` exists and includes key sections such as Overview, Installation, Usage, CI, and License
-- LICENSE: Ensures `LICENSE` exists. With `-fix`, creates a permissive MIT license that you can later replace
-- .gitignore: Ensures `.gitignore` exists with sensible defaults. With `-fix`, creates a starter file
-- CHANGELOG: Ensures `CHANGELOG.md` exists. With `-fix`, creates a minimal starter file
+- LICENSE: Ensures `LICENSE` exists and advises adding an appropriate license if missing
+- .gitignore: Ensures `.gitignore` exists and advises on sensible defaults if missing
+- CHANGELOG: Ensures `CHANGELOG.md` exists and advises adding one if missing
 
-All fixes are safe. Yardstick never overwrites existing files.
+Yardstick is read-only. It never writes files.
 
-## Output Formats
+## Output
 - Table, compact, greppable, stable column order
 - JSON, machine friendly, includes counts by severity
 
@@ -100,7 +105,6 @@ Example JSON shape
   - `main.go`: CLI entry point
   - `internal/checks`: Check types and built in checks
   - `internal/report`: JSON and table output
-  - `internal/scaffold`: Safe file scaffolding
 
 Common tasks
 ```bash
@@ -116,13 +120,16 @@ go build -o yardstick .
 ./yardstick -format table
 ```
 
-## GitHub Actions CI
+## CI
 This repo ships a workflow at `.github/workflows/ci.yml`.
 - Builds and pushes a slim CI image to GHCR on push and workflow dispatch
-- Runs formatting check, vet, tests with coverage, and a build inside that image
+- Lints (golangci-lint), formats, vets, runs tests with coverage, and builds
 - Artifacts are retained for 1 day by design
 
 To run CI only when you trigger it manually, change the workflow `on:` block to only `workflow_dispatch:` and push that change. Restore push and pull_request triggers later when ready.
+
+### Dogfooding
+CI also runs Yardstick against this repository with `-strict` to ensure we stay compliant with our own checks.
 
 ## Adding A New Check
 1. Create a new file under `internal/checks`, for example `codeowners.go`
@@ -138,12 +145,18 @@ Interface shape
 // }
 ```
 
-Keep checks fast and deterministic, prefer local file inspection. If a fix is safe, gate it behind `Options{AutoFix: true}` only.
+Keep checks fast and deterministic, prefer local file inspection. Yardstick is read-only; checks provide guidance but do not write.
 
 ## Design Notes
 - Neutral detection is intentional, yardstick should be useful in Go, Node, Python, Rust, Ruby, and static site repos
-- Auto fixes are safe only, no overwrites
+- Read-only, no writes
 - No em dashes, we prefer commas and hyphens in output
 
 ## License
 MIT, see `LICENSE`.
+
+
+
+
+
+

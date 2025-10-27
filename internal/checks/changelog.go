@@ -1,9 +1,9 @@
 package checks
 
 import (
-	"context"
-	"os"
-	"path/filepath"
+    "context"
+    "os"
+    "path/filepath"
 )
 
 // ChangelogCheck ensures a project includes a CHANGELOG.md file.
@@ -11,8 +11,7 @@ import (
 //
 // Behavior
 //   - If CHANGELOG.md exists, no findings are emitted.
-//   - If missing, a warning is reported.
-//   - With --fix, a minimal changelog is scaffolded.
+//   - If missing, a warning is reported with guidance.
 type ChangelogCheck struct{}
 
 // Key returns the unique identifier for this check.
@@ -30,31 +29,10 @@ func (ChangelogCheck) Run(ctx context.Context, root string, opts Options) ([]Fin
 		return nil, nil
 	}
 
-	// Missing file. Either create a default or warn.
-	if opts.AutoFix {
-		_ = os.WriteFile(path, []byte(defaultChangelog), 0o644)
-		return []Finding{{
-			Check:   "changelog",
-			Level:   LevelWarn,
-			Path:    path,
-			Message: "CHANGELOG.md missing, created a starter file",
-			Fixed:   true,
-		}}, nil
-	}
-
-	return []Finding{{
-		Check:   "changelog",
-		Level:   LevelWarn,
-		Path:    path,
-		Message: "CHANGELOG.md missing",
-	}}, nil
+    return []Finding{{
+        Check:   "changelog",
+        Level:   LevelWarn,
+        Path:    path,
+        Message: "CHANGELOG.md missing. Add a changelog documenting notable changes (Keep a Changelog format recommended)",
+    }}, nil
 }
-
-// defaultChangelog is a minimal template used for scaffolding.
-const defaultChangelog = `# Changelog
-
-All notable changes to this project will be documented in this file.
-
-## Unreleased
-- Initial scaffolding
-`

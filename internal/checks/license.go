@@ -1,17 +1,16 @@
 package checks
 
 import (
-	"context"
-	"os"
-	"path/filepath"
+    "context"
+    "os"
+    "path/filepath"
 )
 
 // LicenseCheck ensures that a LICENSE file is present in the repository.
 //
 // Licensing clarity is essential for both internal and external code sharing.
-// This check verifies that a LICENSE file exists, and if --fix is enabled,
-// it scaffolds a permissive MIT license by default. Teams may later replace it
-// with their specific license requirements.
+// This check verifies that a LICENSE file exists. Yardstick is read-only and
+// does not create files; it provides guidance when the license is missing.
 type LicenseCheck struct{}
 
 // Key returns the unique identifier for this check.
@@ -36,47 +35,10 @@ func (LicenseCheck) Run(ctx context.Context, root string, opts Options) ([]Findi
 		return nil, nil
 	}
 
-	// Missing LICENSE: handle based on fix flag.
-	if opts.AutoFix {
-		_ = os.WriteFile(path, []byte(defaultMIT), 0o644)
-		return []Finding{{
-			Check:   "license",
-			Level:   LevelWarn,
-			Path:    path,
-			Message: "LICENSE missing, created MIT license",
-			Fixed:   true,
-		}}, nil
-	}
-
-	return []Finding{{
-		Check:   "license",
-		Level:   LevelWarn,
-		Path:    path,
-		Message: "LICENSE missing",
-	}}, nil
+    return []Finding{{
+        Check:   "license",
+        Level:   LevelWarn,
+        Path:    path,
+        Message: "LICENSE missing. Add a license file (e.g., MIT, Apache-2.0) appropriate to your project",
+    }}, nil
 }
-
-// defaultMIT provides a simple permissive MIT license.
-// This text is inserted automatically when a license is missing and --fix is used.
-// Users should later edit or replace it if their project requires a different license.
-const defaultMIT = `MIT License
-
-Copyright (c) 2025
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.`

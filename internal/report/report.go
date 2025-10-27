@@ -58,5 +58,5 @@ func PrintTable(w io.Writer, fs []checks.Finding) {
 	for _, f := range fs {
 		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%t\n", f.Check, f.Level, f.Path, f.Message, f.Fixed)
 	}
-	_ = tw.Flush()
+    _ = tw.Flush() //nolint:errcheck // best-effort flush for tabwriter
 }

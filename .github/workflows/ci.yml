@@ -56,6 +56,12 @@ jobs:
           go-version: '1.22.x'
           check-latest: true
 
+      - name: Lint (golangci-lint)
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
+          args: --timeout=3m
+
       - name: Show Go version
         run: go version
 
@@ -71,11 +77,22 @@ jobs:
       - name: Vet
         run: go vet ./...
 
+      - name: Module tidy check
+        shell: bash
+        run: |
+          set -euo pipefail
+          go mod tidy
+          git diff --quiet -- go.mod go.sum || { echo "go.mod/go.sum drift detected"; git --no-pager diff -- go.mod go.sum; exit 1; }
+
       - name: Test
         run: go test -v ./... -coverprofile=coverage.out
 
       - name: Build
         run: go build -buildvcs=false ./...
+
+      - name: Race tests (main branch only)
+        if: github.ref == 'refs/heads/main'
+        run: go test -race ./...
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4
@@ -83,6 +100,34 @@ jobs:
           name: coverage-native
           path: coverage.out
           if-no-files-found: ignore
+          retention-days: 1
+
+  # Dogfood: run yardstick on this repo with strict mode
+  self-check:
+    name: Self Check (yardstick on yardstick)
+    runs-on: ubuntu-latest
+    needs: test-native
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+          check-latest: true
+
+      - name: Run yardstick against this repo (strict)
+        shell: bash
+        run: |
+          set -euo pipefail
+          go run . -format json -strict > yardstick-self.json
+          echo "Self-check counts:" && cat yardstick-self.json
+      - name: Upload self report
+        uses: actions/upload-artifact@v4
+        with:
+          name: yardstick-self
+          path: yardstick-self.json
           retention-days: 1
 
   # Run tests inside our custom image on main/manual builds
@@ -114,6 +159,13 @@ jobs:
 
       - name: Vet
         run: go vet ./...
+
+      - name: Module tidy check
+        shell: bash
+        run: |
+          set -euo pipefail
+          go mod tidy
+          git diff --quiet -- go.mod go.sum || { echo "go.mod/go.sum drift detected"; git --no-pager diff -- go.mod go.sum; exit 1; }
 
       - name: Test
         run: go test -v ./... -coverprofile=coverage.out

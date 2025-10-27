@@ -4,11 +4,10 @@ import (
     "context"
     "os"
     "path/filepath"
-    "strings"
     "testing"
 )
 
-func TestReadmeCheck_Missing_NoFix(t *testing.T) {
+func TestReadmeCheck_Missing_ReadOnly(t *testing.T) {
     dir := t.TempDir()
     path := filepath.Join(dir, "README.md")
     fs, err := (ReadmeCheck{}).Run(context.Background(), dir, Options{AutoFix: false})
@@ -19,26 +18,22 @@ func TestReadmeCheck_Missing_NoFix(t *testing.T) {
         t.Fatalf("expected one warn finding, got %+v", fs)
     }
     if _, err := os.Stat(path); !os.IsNotExist(err) {
-        t.Fatalf("README should not be created without fix")
+        t.Fatalf("README should not be created")
     }
 }
 
-func TestReadmeCheck_Missing_WithFix(t *testing.T) {
+func TestReadmeCheck_Missing_NoWriteEvenWithFix(t *testing.T) {
     dir := t.TempDir()
     path := filepath.Join(dir, "README.md")
     fs, err := (ReadmeCheck{}).Run(context.Background(), dir, Options{AutoFix: true})
     if err != nil {
         t.Fatalf("run: %v", err)
     }
-    if len(fs) != 1 || !fs[0].Fixed {
-        t.Fatalf("expected one fixed finding, got %+v", fs)
+    if len(fs) != 1 || fs[0].Fixed {
+        t.Fatalf("expected one warn finding with Fixed=false, got %+v", fs)
     }
-    b, err := os.ReadFile(path)
-    if err != nil {
-        t.Fatalf("read scaffolded README: %v", err)
-    }
-    if !strings.Contains(string(b), "## Overview") {
-        t.Fatalf("scaffolded README missing expected content")
+    if _, err := os.Stat(path); !os.IsNotExist(err) {
+        t.Fatalf("README should not be created when AutoFix is true (read-only policy)")
     }
 }
 
@@ -59,4 +54,3 @@ func TestReadmeCheck_MissingSections(t *testing.T) {
         t.Fatalf("expected 3 warnings for missing sections, got %d", len(fs))
     }
 }
-

@@ -54,9 +54,9 @@ func PrintTable(w io.Writer, fs []checks.Finding) {
 
 	// tabwriter keeps columns aligned without manual padding.
 	tw := tabwriter.NewWriter(w, 0, 2, 2, ' ', 0)
-	fmt.Fprintln(tw, "CHECK\tLEVEL\tPATH\tMESSAGE\tFIXED")
+	_, _ = fmt.Fprintln(tw, "CHECK\tLEVEL\tPATH\tMESSAGE\tFIXED")
 	for _, f := range fs {
-		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%t\n", f.Check, f.Level, f.Path, f.Message, f.Fixed)
+		_, _ = fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%t\n", f.Check, f.Level, f.Path, f.Message, f.Fixed)
 	}
-    _ = tw.Flush() //nolint:errcheck // best-effort flush for tabwriter
+	_ = tw.Flush() //nolint:errcheck // best-effort flush for tabwriter
 }

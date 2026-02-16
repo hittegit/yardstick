@@ -1,10 +1,10 @@
 package checks
 
 import (
-    "context"
-    "os"
-    "path/filepath"
-    "strings"
+	"context"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 // ReadmeCheck verifies that a project contains a README.md file
@@ -31,16 +31,17 @@ func (ReadmeCheck) Description() string {
 func (ReadmeCheck) Run(ctx context.Context, root string, opts Options) ([]Finding, error) {
 	path := filepath.Join(root, "README.md")
 
-    b, err := os.ReadFile(path)
-    if err != nil {
-        // Read-only policy: never write, provide guidance only.
-        return []Finding{{
-            Check:   "readme",
-            Level:   LevelWarn,
-            Path:    path,
-            Message: "README.md missing. Create README.md with sections: Overview, Installation, Usage, CI, License",
-        }}, nil
-    }
+	// #nosec G304 -- root/path are intentionally user-selected scan targets.
+	b, err := os.ReadFile(path)
+	if err != nil {
+		// Read-only policy: never write, provide guidance only.
+		return []Finding{{
+			Check:   "readme",
+			Level:   LevelWarn,
+			Path:    path,
+			Message: "README.md missing. Create README.md with sections: Overview, Installation, Usage, CI, License",
+		}}, nil
+	}
 
 	// Check for required section headers.
 	content := string(b)
@@ -58,5 +59,5 @@ func (ReadmeCheck) Run(ctx context.Context, root string, opts Options) ([]Findin
 		}
 	}
 
-    return findings, nil
+	return findings, nil
 }

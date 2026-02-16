@@ -23,7 +23,7 @@ linters-settings:
     severity: warning
     rules:
       - name: exported
-        arguments: ["disable"]
+        disabled: true
   misspell:
     locale: US
   gosec:

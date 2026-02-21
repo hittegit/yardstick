@@ -99,6 +99,45 @@ Example JSON shape
 - With `-strict`, non zero exit when warnings are present
 - CLI errors also return a non zero exit
 
+## Using In External CI
+Pin Yardstick to a released version in downstream repositories, then run JSON output and enforce your policy in the workflow.
+
+GitHub Actions example:
+```yaml
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  yardstick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.22.x'
+
+      - name: Install pinned yardstick release
+        run: go install github.com/hittegit/yardstick@v0.1.0
+
+      - name: Run yardstick and save JSON report
+        run: |
+          yardstick -path . -format json > yardstick.json
+          cat yardstick.json
+
+      - name: Fail build when errors are present
+        run: |
+          test "$(jq -r '.counts.error' yardstick.json)" = "0"
+```
+
+To fail on warnings too, either:
+- run `yardstick -strict -format json` and rely on its exit code, or
+- assert `.counts.warn == 0` in your workflow script.
+
 ## Local Development
 - Prerequisites: Go 1.22, a shell, and git
 - Repo layout
@@ -154,7 +193,6 @@ Keep checks fast and deterministic, prefer local file inspection. Yardstick is r
 
 ## License
 MIT, see `LICENSE`.
-
 
 
 

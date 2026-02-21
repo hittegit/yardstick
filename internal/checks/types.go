@@ -27,22 +27,22 @@ type Finding struct {
 	Level Level `json:"level"`
 
 	// Path points to the file or directory the finding concerns.
-	// Optional, may be empty for project-wide findings.
-	Path string `json:"path,omitempty"`
+	// For project-wide findings, this may be the repository root path.
+	Path string `json:"path"`
 
 	// Message provides a short human-readable description of the issue.
 	Message string `json:"message"`
 
 	// Fixed is true if the issue was automatically corrected when --fix was used.
-	Fixed bool `json:"fixed,omitempty"`
+	Fixed bool `json:"fixed"`
 }
 
 // Options contains runtime flags passed into each check.
 // Used to control whether a check should attempt auto-remediation.
 type Options struct {
-    // AutoFix is reserved for potential future use. Yardstick is read-only
-    // and does not write; checks must not modify files regardless of this flag.
-    AutoFix bool
+	// AutoFix is reserved for potential future use. Yardstick is read-only
+	// and does not write; checks must not modify files regardless of this flag.
+	AutoFix bool
 }
 
 // Check is the interface that all yardstick checks must implement.
@@ -54,13 +54,13 @@ type Options struct {
 //
 // Example usage pattern:
 //
-//   type MyCheck struct {}
-//   func (MyCheck) Key() string         { return "mycheck" }
-//   func (MyCheck) Description() string { return "verifies something important" }
-//   func (MyCheck) Run(ctx context.Context, root string, opts Options) ([]Finding, error) {
-//       // perform validation logic here
-//       return []Finding{{Check: "mycheck", Level: LevelWarn, Message: "example"}}, nil
-//   }
+//	type MyCheck struct {}
+//	func (MyCheck) Key() string         { return "mycheck" }
+//	func (MyCheck) Description() string { return "verifies something important" }
+//	func (MyCheck) Run(ctx context.Context, root string, opts Options) ([]Finding, error) {
+//	    // perform validation logic here
+//	    return []Finding{{Check: "mycheck", Level: LevelWarn, Message: "example"}}, nil
+//	}
 type Check interface {
 	Key() string
 	Description() string

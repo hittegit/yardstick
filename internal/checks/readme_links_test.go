@@ -50,7 +50,7 @@ func TestReadmeLinksCheck_MissingLocalFileWarns(t *testing.T) {
 
 func TestReadmeLinksCheck_ExistingLinksPass(t *testing.T) {
 	dir := t.TempDir()
-	if err := os.MkdirAll(filepath.Join(dir, "docs"), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(dir, "docs"), 0o750); err != nil {
 		t.Fatalf("mkdir docs: %v", err)
 	}
 	if err := os.WriteFile(filepath.Join(dir, "docs", "guide.md"), []byte("# Guide\n\n## Install\n"), 0o644); err != nil {

@@ -21,7 +21,7 @@ func TestCIWorkflowCheck_MissingWarns(t *testing.T) {
 func TestCIWorkflowCheck_FindsWorkflowFile(t *testing.T) {
 	dir := t.TempDir()
 	workflows := filepath.Join(dir, ".github", "workflows")
-	if err := os.MkdirAll(workflows, 0o755); err != nil {
+	if err := os.MkdirAll(workflows, 0o750); err != nil {
 		t.Fatalf("mkdir workflows: %v", err)
 	}
 	if err := os.WriteFile(filepath.Join(workflows, "ci.yml"), []byte("name: ci"), 0o644); err != nil {

@@ -3,6 +3,15 @@
 All notable changes to this project will be documented here.
 
 ## Unreleased
+
+## v0.2.0 - 2026-02-21
+- Added new CI hygiene checks:
+  - `codeowners`
+  - `security_policy`
+  - `contributing`
+  - `ci_workflow`
+  - `readme_links`
+- Updated check registry and README documentation to include the new checks
 - Hardened CI contract for downstream consumers:
   - invalid `-format` values now fail fast
   - unknown `-only` check keys now fail fast

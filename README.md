@@ -64,9 +64,14 @@ yardstick -list
 ## What It Checks
 - Manifest: Detects common manifests such as `go.mod`, `package.json`, `pyproject.toml`, `Cargo.toml`, and more. Reports info on a match, reports a warning if none are found
 - README: Ensures `README.md` exists and includes key sections such as Overview, Installation, Usage, CI, and License
+- README Links: Validates local README links and markdown anchors for `README.md`
 - LICENSE: Ensures `LICENSE` exists and advises adding an appropriate license if missing
 - .gitignore: Ensures `.gitignore` exists and advises on sensible defaults if missing
 - CHANGELOG: Ensures `CHANGELOG.md` exists and advises adding one if missing
+- CODEOWNERS: Ensures repository ownership rules are defined in a standard GitHub CODEOWNERS location
+- Security Policy: Ensures `SECURITY.md` exists in a standard GitHub location
+- Contributing: Ensures `CONTRIBUTING.md` exists in a standard GitHub location
+- CI Workflow: Ensures at least one `.yml` or `.yaml` workflow exists in `.github/workflows`
 
 Yardstick is read-only. It never writes files.
 
@@ -193,7 +198,6 @@ Keep checks fast and deterministic, prefer local file inspection. Yardstick is r
 
 ## License
 MIT, see `LICENSE`.
-
 
 
 

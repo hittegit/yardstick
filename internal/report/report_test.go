@@ -79,3 +79,60 @@ func TestOutputJSON_IncludesStableFindingFields(t *testing.T) {
 		t.Fatalf("missing fixed field: %s", s)
 	}
 }
+
+func TestFromRun_SummaryAllPassed(t *testing.T) {
+	out := FromRun([]CheckStatus{
+		{Check: "manifest", Status: "pass"},
+		{Check: "readme", Status: "pass"},
+	}, nil)
+	if out.Summary != "All checks passed (2/2)." {
+		t.Fatalf("unexpected summary: %q", out.Summary)
+	}
+}
+
+func TestFromRun_SummaryWithFailures(t *testing.T) {
+	out := FromRun([]CheckStatus{
+		{Check: "manifest", Status: "pass"},
+		{Check: "readme", Status: "fail"},
+		{Check: "license", Status: "fail"},
+	}, nil)
+	if out.Summary != "2 of 3 checks failed." {
+		t.Fatalf("unexpected summary: %q", out.Summary)
+	}
+}
+
+func TestPrintVerboseTable_IncludesStatusAndGuidance(t *testing.T) {
+	out := Output{
+		Summary: "1 of 2 checks failed.",
+		Checks: []CheckStatus{
+			{Check: "manifest", Status: "pass", Findings: 0},
+			{
+				Check:        "readme",
+				Status:       "fail",
+				Level:        checks.LevelWarn,
+				Findings:     1,
+				WhyImportant: "docs matter",
+				HowToResolve: "add README sections",
+			},
+		},
+		Findings: []checks.Finding{
+			{Check: "readme", Level: checks.LevelWarn, Path: "/repo/README.md", Message: "Missing section: ## CI"},
+		},
+	}
+
+	var buf bytes.Buffer
+	PrintVerboseTable(&buf, out)
+	s := buf.String()
+	if !strings.Contains(s, "SUMMARY: 1 of 2 checks failed.") {
+		t.Fatalf("missing summary: %s", s)
+	}
+	if !strings.Contains(s, "readme") || !strings.Contains(s, "fail") {
+		t.Fatalf("missing failed check status: %s", s)
+	}
+	if !strings.Contains(s, "Why: docs matter") || !strings.Contains(s, "Fix: add README sections") {
+		t.Fatalf("missing guidance in verbose table: %s", s)
+	}
+	if !strings.Contains(s, "FINDINGS") {
+		t.Fatalf("missing findings section: %s", s)
+	}
+}

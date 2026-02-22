@@ -96,6 +96,7 @@ func run(ctx context.Context) error {
 
 	// Run all registered checks (or a subset if specified).
 	var findings []checks.Finding
+	var checkStatuses []report.CheckStatus
 	for _, c := range allChecks {
 		// Skip any checks not listed in the --only flag.
 		if sel != nil {
@@ -110,7 +111,10 @@ func run(ctx context.Context) error {
 			return fmt.Errorf("check %s: %w", c.Key(), err)
 		}
 		findings = append(findings, fs...)
+		checkStatuses = append(checkStatuses, statusForCheck(c, fs))
 	}
+
+	out := report.FromRun(checkStatuses, findings)
 
 	// Render the report in the requested format.
 	switch *flagFormat {
@@ -118,12 +122,12 @@ func run(ctx context.Context) error {
 		// Machine-readable output for CI pipelines.
 		enc := json.NewEncoder(os.Stdout)
 		enc.SetIndent("", "  ")
-		if err := enc.Encode(report.FromFindings(findings)); err != nil {
+		if err := enc.Encode(out); err != nil {
 			return err
 		}
 	case "table":
-		// Human-readable table format.
-		report.PrintTable(os.Stdout, findings)
+		// Human-readable table format with per-check status and guidance.
+		report.PrintVerboseTable(os.Stdout, out)
 	}
 
 	// Evaluate whether any errors or warnings should cause a nonzero exit.
@@ -144,6 +148,41 @@ func run(ctx context.Context) error {
 		return errors.New("policy violations found")
 	}
 	return nil
+}
+
+func statusForCheck(c checks.Check, fs []checks.Finding) report.CheckStatus {
+	status := report.CheckStatus{
+		Check:       c.Key(),
+		Description: c.Description(),
+		Status:      "pass",
+		Findings:    len(fs),
+	}
+	if len(fs) == 0 {
+		return status
+	}
+
+	status.Level = highestLevel(fs)
+	if status.Level == checks.LevelWarn || status.Level == checks.LevelError {
+		status.Status = "fail"
+		if g, ok := checks.GuidanceForCheck(c.Key()); ok {
+			status.WhyImportant = g.WhyImportant
+			status.HowToResolve = g.HowToResolve
+		}
+	}
+	return status
+}
+
+func highestLevel(fs []checks.Finding) checks.Level {
+	level := checks.LevelInfo
+	for _, f := range fs {
+		switch f.Level {
+		case checks.LevelError:
+			return checks.LevelError
+		case checks.LevelWarn:
+			level = checks.LevelWarn
+		}
+	}
+	return level
 }
 
 // splitCSV parses comma-separated values and trims surrounding whitespace.

@@ -1,4 +1,4 @@
-## Code of Conduct
+# Code of Conduct
 
 We are committed to a welcoming and harassment-free experience for everyone. Be kind, constructive, and respectful.
 

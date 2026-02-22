@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/hittegit/yardstick/internal/checks"
 )
 
 func snapshotFlags() func() {
@@ -87,5 +89,54 @@ func TestSplitCSV_Trimmed(t *testing.T) {
 		if got[i] != want[i] {
 			t.Fatalf("unexpected parse, got=%v want=%v", got, want)
 		}
+	}
+}
+
+func TestHighestLevel(t *testing.T) {
+	if got := highestLevel([]checks.Finding{{Level: checks.LevelInfo}}); got != checks.LevelInfo {
+		t.Fatalf("expected info, got %s", got)
+	}
+	if got := highestLevel([]checks.Finding{{Level: checks.LevelInfo}, {Level: checks.LevelWarn}}); got != checks.LevelWarn {
+		t.Fatalf("expected warn, got %s", got)
+	}
+	if got := highestLevel([]checks.Finding{{Level: checks.LevelWarn}, {Level: checks.LevelError}}); got != checks.LevelError {
+		t.Fatalf("expected error, got %s", got)
+	}
+}
+
+type fakeCheck struct {
+	key  string
+	desc string
+}
+
+func (f fakeCheck) Key() string         { return f.key }
+func (f fakeCheck) Description() string { return f.desc }
+func (f fakeCheck) Run(ctx context.Context, root string, opts checks.Options) ([]checks.Finding, error) {
+	return nil, nil
+}
+
+func TestStatusForCheck_PassAndFail(t *testing.T) {
+	pass := statusForCheck(fakeCheck{key: "manifest", desc: "m"}, nil)
+	if pass.Status != "pass" || pass.Findings != 0 {
+		t.Fatalf("unexpected pass status: %+v", pass)
+	}
+	infoPass := statusForCheck(fakeCheck{key: "manifest", desc: "m"}, []checks.Finding{
+		{Check: "manifest", Level: checks.LevelInfo, Message: "detected"},
+	})
+	if infoPass.Status != "pass" {
+		t.Fatalf("info findings should not fail status: %+v", infoPass)
+	}
+
+	fail := statusForCheck(fakeCheck{key: "readme", desc: "r"}, []checks.Finding{
+		{Check: "readme", Level: checks.LevelWarn, Message: "missing"},
+	})
+	if fail.Status != "fail" {
+		t.Fatalf("expected fail status: %+v", fail)
+	}
+	if fail.Level != checks.LevelWarn {
+		t.Fatalf("expected warn level: %+v", fail)
+	}
+	if fail.WhyImportant == "" || fail.HowToResolve == "" {
+		t.Fatalf("expected guidance fields on failure: %+v", fail)
 	}
 }

@@ -78,24 +78,41 @@ Yardstick is read-only. It never writes files.
 ## Output
 - Table, compact, greppable, stable column order
 - JSON, machine friendly, includes counts by severity
+- Verbose check status summary for every executed check, including pass/fail status
+- Failure guidance with why the issue matters and how to resolve it
 
 Example table output
 ```
-CHECK       LEVEL  PATH          MESSAGE                                FIXED
-changelog   warn   /repo/CHANGELOG.md  CHANGELOG.md missing               false
-gitignore   warn   /repo/.gitignore     .gitignore missing                 false
-license     warn   /repo/LICENSE        LICENSE missing                    false
-manifest    info   /repo/go.mod         Go project detected via go.mod     false
-readme      warn   /repo/README.md      Missing section: ## CI             false
+SUMMARY: 1 of 5 checks failed.
+
+CHECK      STATUS  LEVEL  FINDINGS  DETAILS
+manifest   pass    info   1         OK
+readme     fail    warn   1         Why: A complete README reduces onboarding friction and clarifies project usage for contributors and consumers. | Fix: Create or update README.md to include Overview, Installation, Usage, CI, and License sections.
+
+FINDINGS
+CHECK     LEVEL  PATH             MESSAGE                    FIXED
+readme    warn   /repo/README.md  Missing section: ## CI     false
 ```
 
 Example JSON shape
 ```json
 {
-  "findings": [
-    {"check":"manifest","level":"info","path":"/repo/go.mod","message":"Go project detected via go.mod","fixed":false}
+  "summary": "1 of 5 checks failed.",
+  "checks": [
+    {
+      "check": "readme",
+      "description": "Ensures README.md exists and includes required sections",
+      "status": "fail",
+      "level": "warn",
+      "findings": 1,
+      "why_important": "A complete README reduces onboarding friction and clarifies project usage for contributors and consumers.",
+      "how_to_resolve": "Create or update README.md to include Overview, Installation, Usage, CI, and License sections."
+    }
   ],
-  "counts": {"info":1, "warn":0, "error":0}
+  "findings": [
+    {"check":"readme","level":"warn","path":"/repo/README.md","message":"Missing section: ## CI","fixed":false}
+  ],
+  "counts": {"info":0, "warn":1, "error":0}
 }
 ```
 
@@ -198,7 +215,6 @@ Keep checks fast and deterministic, prefer local file inspection. Yardstick is r
 
 ## License
 MIT, see `LICENSE`.
-
 
 
 

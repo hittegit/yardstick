@@ -9,7 +9,8 @@ Yardstick is a read-only CLI intended to run in CI for any repository and report
   - `-format table` for human logs
   - `-format json` for machine parsing
 - JSON schema stability:
-  - top-level: `findings`, `counts`
+  - top-level: `summary`, `checks`, `findings`, `counts`
+  - `checks[]` keys: `check`, `description`, `status`, `level`, `findings`, `why_important`, `how_to_resolve`
   - `findings[]` keys: `check`, `level`, `path`, `message`, `fixed`
   - `counts` keys: `info`, `warn`, `error`
 - Exit behavior:

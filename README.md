@@ -31,7 +31,7 @@ go build -o yardstick .
 - From module path
 ```bash
 # Installs the yardstick binary into your GOPATH/bin or GOBIN
-GO111MODULE=on go install github.com/hittegit/yardstick@latest
+GO111MODULE=on go install github.com/hittegit/yardstick@v0.2.0
 yardstick -h
 ```
 
@@ -127,7 +127,7 @@ jobs:
           go-version: '1.22.x'
 
       - name: Install pinned yardstick release
-        run: go install github.com/hittegit/yardstick@v0.1.0
+        run: go install github.com/hittegit/yardstick@v0.2.0
 
       - name: Run yardstick and save JSON report
         run: |

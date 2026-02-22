@@ -3,6 +3,7 @@
 This document defines how we test Yardstick locally and in CI to keep quality high, feedback fast, and results reproducible.
 
 ## Goals
+
 - Fast feedback: sub‑minute local cycle for lint, vet, and unit tests.
 - Deterministic: no network, no time‑of‑day dependencies, stable outputs.
 - CI parity: native runner and container parity to catch environment drift.
@@ -10,6 +11,7 @@ This document defines how we test Yardstick locally and in CI to keep quality hi
 - Release confidence: reproducible builds and basic binary smoke tests.
 
 ## Test Types
+
 - Unit tests (Go):
   - Packages: `internal/checks`, `internal/report`.
   - Use `t.TempDir()` for any filesystem writes, never touch the repo tree.
@@ -27,9 +29,11 @@ This document defines how we test Yardstick locally and in CI to keep quality hi
   - Run `yardstick -strict` on this repo to enforce our own rules.
 
 ## Local Workflow
+
 - Prereqs: Go 1.22+, optional `golangci-lint`, optional Docker.
 
 Suggested loop:
+
 ```bash
 # Format, vet, lint, test, build
 make fmt vet lint test build
@@ -43,6 +47,7 @@ go build -trimpath -buildvcs=false -o yardstick .
 ```
 
 Additional checks:
+
 ```bash
 # Race detector (slower, run before releases)
 go test -race ./...
@@ -58,6 +63,7 @@ docker run --rm -v "${PWD}":/work -w /work ys-ci sh -lc \
 ```
 
 CLI smoke tests:
+
 ```bash
 # Table and JSON output
 go run . -format table
@@ -102,12 +108,14 @@ goreleaser release --snapshot --clean
 ```
 
 ## Adding Tests
+
 - For a new check `internal/checks/foo.go`:
   - Add `foo_test.go` with table‑driven cases.
   - Use `t.TempDir()` for files and assert findings precisely (level, path, message, fixed flag).
   - Register the check in `internal/checks/registry.go` and extend any integration tests if needed.
 
 ## Exit Criteria for PRs
+
 - Lint clean (`golangci-lint run` passes).
 - `go test ./...` passes; coverage does not decrease materially.
 - `go vet ./...` clean.
@@ -115,8 +123,7 @@ goreleaser release --snapshot --clean
 - No unformatted files or module drift after `gofmt -s -w .` and `go mod tidy`.
 
 ## Future End‑to‑End (optional)
+
 - Cross‑repo smoke tests against public sample repos (e.g., a static site):
   - Matrix of target repos, run `yardstick -format json` and collect reports as artifacts.
   - Gate only on fatal errors by default; warnings are informative.
-
-

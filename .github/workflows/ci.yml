@@ -1,6 +1,7 @@
+---
 name: ci
 
-on:
+"on":
   push:
     branches:
       - "**"
@@ -15,7 +16,9 @@ jobs:
       contents: read
       packages: write
     # Build/push image only on main pushes or manual runs
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main'))
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main'))
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -82,7 +85,11 @@ jobs:
         run: |
           set -euo pipefail
           go mod tidy
-          git diff --quiet -- go.mod go.sum || { echo "go.mod/go.sum drift detected"; git --no-pager diff -- go.mod go.sum; exit 1; }
+          git diff --quiet -- go.mod go.sum || {
+            echo "go.mod/go.sum drift detected";
+            git --no-pager diff -- go.mod go.sum;
+            exit 1;
+          }
 
       - name: Test
         run: go test -v ./... -coverprofile=coverage.out
@@ -165,7 +172,11 @@ jobs:
         run: |
           set -euo pipefail
           go mod tidy
-          git diff --quiet -- go.mod go.sum || { echo "go.mod/go.sum drift detected"; git --no-pager diff -- go.mod go.sum; exit 1; }
+          git diff --quiet -- go.mod go.sum || {
+            echo "go.mod/go.sum drift detected";
+            git --no-pager diff -- go.mod go.sum;
+            exit 1;
+          }
 
       - name: Test
         run: go test -v ./... -coverprofile=coverage.out

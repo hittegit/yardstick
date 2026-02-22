@@ -1,3 +1,4 @@
+---
 run:
   timeout: 3m
   tests: true
@@ -28,7 +29,7 @@ linters-settings:
     locale: US
   gosec:
     excludes:
-      - G306 # Allow file perms set explicitly in controlled scaffolding
+      - G306  # Allow file perms set explicitly in controlled scaffolding
 
 issues:
   exclude-use-default: false

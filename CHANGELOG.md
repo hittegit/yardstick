@@ -3,6 +3,7 @@
 All notable changes to this project will be documented here.
 
 ## Unreleased
+
 - Expanded reporting output:
   - Added top-level summary text and per-check pass/fail status in JSON output
   - Added verbose table output showing all executed checks, status, and finding counts
@@ -11,6 +12,7 @@ All notable changes to this project will be documented here.
 - Added tests covering per-check status summaries and verbose table output
 
 ## v0.2.0 - 2026-02-21
+
 - Added new CI hygiene checks:
   - `codeowners`
   - `security_policy`
@@ -27,6 +29,7 @@ All notable changes to this project will be documented here.
 - Added README section with pinned-version GitHub Actions usage for external CI
 
 ## v0.1.0 - 2026-02-21
+
 - Initial test suite and CI
 - Linting and self-check in CI
 - Release workflow with multi-OS builds

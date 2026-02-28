@@ -11,6 +11,14 @@ var guidanceByCheck = map[string]Guidance{
 		WhyImportant: "A manifest helps tools and contributors understand the project stack and dependency model.",
 		HowToResolve: "Add a standard manifest for your ecosystem, for example go.mod, package.json, pyproject.toml, or Cargo.toml.",
 	},
+	"javascript_framework": {
+		WhyImportant: "Framework conventions improve build reliability and reduce CI/runtime surprises across JavaScript projects.",
+		HowToResolve: "Add the expected package scripts, and for Next.js ensure app/ or pages/ exists with scripts.dev/build/start configured.",
+	},
+	"python_project": {
+		WhyImportant: "Python project conventions make dependency management and CI test execution more predictable.",
+		HowToResolve: "Add pyproject.toml and ensure a test layout/config exists, for example tests/, pytest.ini, tox.ini, or noxfile.py.",
+	},
 	"static_site": {
 		WhyImportant: "A minimal static-site structure improves reliability for builds, hosting, and navigation.",
 		HowToResolve: "Add index.md, a pages/ directory with markdown content, and an assets/ directory for static files.",

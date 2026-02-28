@@ -183,7 +183,7 @@ Type YES to continue.
 
 If response is not exactly `YES`, abort.
 
-#### Mode E Steps
+#### Mode D Steps
 
 1. Confirm PR checks are green:
 
@@ -201,7 +201,7 @@ If response is not exactly `YES`, abort.
 
 Cut and push a new semver tag from `main` after merge.
 
-#### Confirmation gate
+#### Mode E Confirmation Gate
 
 ```text
 This will create and push a production release tag from main.
@@ -210,7 +210,7 @@ Type YES to continue.
 
 If response is not exactly `YES`, abort.
 
-#### Steps
+#### Mode E Steps
 
 1. Update local `main`:
 

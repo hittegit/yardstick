@@ -62,20 +62,11 @@ Yardstick is a read-only CLI intended to run in CI for any repository and report
 
 ## Delivery Workflow
 
-- Start every non-trivial change with a GitHub Issue.
-- Issue content must include:
-  - problem statement
-  - proposed approach
-  - acceptance criteria
-  - release impact (none, patch, minor, major)
-- Branch naming must include the issue number:
-  - `feat/<issue-number>-<short-slug>`
-  - `fix/<issue-number>-<short-slug>`
-  - `chore/<issue-number>-<short-slug>`
-- All work happens on that issue branch, never directly on `main`.
-- Open a PR that links the issue (`Closes #<issue-number>`).
-- Require green CI and at least one review before merge.
-- After merge to `main`, cut a release tag (`vX.Y.Z`) so downstream users can pin a published version.
+- Delivery workflow is defined in `push_code.md` and is the single source of truth.
+- For non-trivial work, follow the issue-first process in that file:
+  - issue -> issue-numbered branch -> PR -> merge to `main` -> release tag
+- Do not duplicate or contradict workflow steps in this file.
+- If delivery process changes, update `push_code.md` first and keep this reference current.
 
 ## Downstream Sync Policy
 
@@ -90,7 +81,8 @@ Yardstick is a read-only CLI intended to run in CI for any repository and report
 ## Slash Command Spec
 
 - Repository-specific push/promotion command behavior is documented in `push_code.md`.
-- Keep that file aligned with current GitHub workflow, branch policy, and release process.
+- That file governs branch creation, PR handling, merge gates, and release steps.
+- Keep it aligned with current GitHub workflow, branch policy, and release process.
 
 ## When Adding Checks
 

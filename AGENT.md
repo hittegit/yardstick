@@ -60,6 +60,30 @@ Yardstick is a read-only CLI intended to run in CI for any repository and report
 - Keep `.markdownlint.yaml` and YAML formatting aligned with these checks.
 - Do not merge when markdown or YAML lint reports errors.
 
+## Delivery Workflow
+
+- Delivery workflow is defined in `push_code.md` and is the single source of truth.
+- For non-trivial work, follow the issue-first process in that file:
+  - issue -> issue-numbered branch -> PR -> merge to `main` -> release tag
+- Do not duplicate or contradict workflow steps in this file.
+- If delivery process changes, update `push_code.md` first and keep this reference current.
+
+## Downstream Sync Policy
+
+- Downstream repos (for example `dharma-siblings`) should pin Yardstick to a release tag, not `latest`.
+- Keep downstream repos in sync using automated update PRs (Renovate regex manager for `go install ...@vX.Y.Z` lines).
+- Update flow for downstream repos:
+  - bot opens PR with new Yardstick version
+  - CI verifies compatibility
+  - reviewer approves and merges
+- Do not auto-merge dependency bumps that affect CI policy without a passing pipeline.
+
+## Slash Command Spec
+
+- Repository-specific push/promotion command behavior is documented in `push_code.md`.
+- That file governs branch creation, PR handling, merge gates, and release steps.
+- Keep it aligned with current GitHub workflow, branch policy, and release process.
+
 ## When Adding Checks
 
 1. Implement `Check` in `internal/checks/<name>.go`.

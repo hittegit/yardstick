@@ -16,16 +16,18 @@ package checks
 // and makes CI output easier to reason about.
 func All() []Check {
 	return []Check{
-		ManifestCheck{},       // Detect project ecosystem by scanning for common manifests
-		StaticSiteCheck{},     // Validate minimal structure for static sites (e.g., Jekyll)
-		ReadmeCheck{},         // Ensures README.md exists and has required sections
-		ReadmeLinksCheck{},    // Verifies local README links resolve
-		LicenseCheck{},        // Ensures LICENSE file is present
-		GitIgnoreCheck{},      // Ensures .gitignore covers common entries
-		ChangelogCheck{},      // Ensures CHANGELOG.md exists
-		CodeownersCheck{},     // Ensures CODEOWNERS exists in standard GitHub locations
-		SecurityPolicyCheck{}, // Ensures SECURITY.md exists in standard GitHub locations
-		ContributingCheck{},   // Ensures CONTRIBUTING.md exists in standard GitHub locations
-		CIWorkflowCheck{},     // Ensures at least one CI workflow exists
+		ManifestCheck{},            // Detect project ecosystem by scanning for common manifests
+		JavaScriptFrameworkCheck{}, // Validate baseline conventions for JavaScript framework projects
+		PythonProjectCheck{},       // Validate baseline conventions for Python projects
+		StaticSiteCheck{},          // Validate minimal structure for static sites (e.g., Jekyll)
+		ReadmeCheck{},              // Ensures README.md exists and has required sections
+		ReadmeLinksCheck{},         // Verifies local README links resolve
+		LicenseCheck{},             // Ensures LICENSE file is present
+		GitIgnoreCheck{},           // Ensures .gitignore covers common entries
+		ChangelogCheck{},           // Ensures CHANGELOG.md exists
+		CodeownersCheck{},          // Ensures CODEOWNERS exists in standard GitHub locations
+		SecurityPolicyCheck{},      // Ensures SECURITY.md exists in standard GitHub locations
+		ContributingCheck{},        // Ensures CONTRIBUTING.md exists in standard GitHub locations
+		CIWorkflowCheck{},          // Ensures at least one CI workflow exists
 	}
 }

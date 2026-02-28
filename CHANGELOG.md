@@ -4,6 +4,11 @@ All notable changes to this project will be documented here.
 
 ## Unreleased
 
+- Added ecosystem-specific checks:
+  - `javascript_framework` for broad JavaScript framework conventions with explicit Next.js compatibility validation
+  - `python_project` for Python project conventions, test-layout signals, and tooling guidance
+- Added tests for new JavaScript framework and Python checks
+- Updated check registry, guidance, and README documentation for expanded ecosystem support
 - Expanded reporting output:
   - Added top-level summary text and per-check pass/fail status in JSON output
   - Added verbose table output showing all executed checks, status, and finding counts

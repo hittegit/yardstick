@@ -6,7 +6,7 @@ A small Go CLI that scans repositories for hygiene issues and emits readable rep
 
 ## Overview
 
-Yardstick runs a fast set of repository hygiene checks and renders machine or human friendly reports. It is ecosystem-aware, so you can drop it into Go, Node, Python, Rust, or static site repositories and get useful results with zero configuration.
+Yardstick runs a fast set of repository hygiene checks and renders machine or human friendly reports. It is ecosystem-aware, so you can drop it into Go, JavaScript framework, Python, Rust, or static site repositories and get useful results with zero configuration.
 
 ## Features
 
@@ -72,6 +72,8 @@ yardstick -list
 ## What It Checks
 
 - Manifest: Detects common manifests such as `go.mod`, `package.json`, `pyproject.toml`, `Cargo.toml`, and more. Reports info on a match, reports a warning if none are found
+- JavaScript Framework: Validates baseline conventions for JavaScript framework projects, with explicit Next.js compatibility checks
+- Python Project: Validates baseline conventions for Python projects, including test-layout and modern-tooling guidance
 - README: Ensures `README.md` exists and includes key sections such as Overview, Installation, Usage, CI, and License
 - README Links: Validates local README links and markdown anchors for `README.md`
 - LICENSE: Ensures `LICENSE` exists and advises adding an appropriate license if missing
@@ -233,7 +235,7 @@ Keep checks fast and deterministic, prefer local file inspection. Yardstick is r
 
 ## Design Notes
 
-- Neutral detection is intentional, yardstick should be useful in Go, Node, Python, Rust, Ruby, and static site repos
+- Neutral detection is intentional, yardstick should be useful in Go, JavaScript framework, Python, Rust, Ruby, and static site repos
 - Read-only, no writes
 - No em dashes, we prefer commas and hyphens in output
 

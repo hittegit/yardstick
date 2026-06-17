@@ -1,10 +1,10 @@
 # Minimal CI image for yardstick
 # Base: debian:bookworm-slim
-# Includes: Go 1.22, git, curl, ca-certificates
+# Includes: Go 1.26, git, curl, ca-certificates
 
 FROM debian:bookworm-slim
 
-ARG GO_VERSION=1.22.0
+ARG GO_VERSION=1.26.4
 ENV PATH=/usr/local/go/bin:${PATH}
 
 RUN set -eux; \

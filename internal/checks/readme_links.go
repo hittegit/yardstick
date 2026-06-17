@@ -73,7 +73,7 @@ func (ReadmeLinksCheck) Run(ctx context.Context, root string, opts Options) ([]F
 			continue
 		}
 		fullPath := filepath.Join(root, filepath.FromSlash(pathPart))
-		info, statErr := os.Stat(fullPath)
+		info, statErr := os.Stat(fullPath) // #nosec G703 -- path scoped to user-provided repository root via filepath.Join
 		if statErr != nil {
 			findings = append(findings, Finding{
 				Check:   "readme_links",
@@ -116,7 +116,7 @@ func looksLikeMarkdown(path string) bool {
 }
 
 func markdownFileHasAnchor(path, anchor string) (bool, error) {
-	// #nosec G304 -- path is derived from the selected repository root.
+	// #nosec G304 G703 -- path is derived from the selected repository root.
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return false, err

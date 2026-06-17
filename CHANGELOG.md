@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented here.
 
-## Unreleased
+## v0.5.0 - 2026-06-17
 
 - Added ecosystem-specific checks:
   - `javascript_framework` for broad JavaScript framework conventions with explicit Next.js compatibility validation
@@ -15,6 +15,11 @@ All notable changes to this project will be documented here.
   - Added remediation guidance and rationale for failed checks
 - Added check guidance catalog used by reporting to explain why failures matter and how to resolve them
 - Added tests covering per-check status summaries and verbose table output
+- Migrated `.golangci.yml` to golangci-lint v2 config format
+- Bumped Go from 1.22 to 1.26 across go.mod, CI workflows, and the CI Docker image
+- Bumped `actions/checkout` to v6 and `golangci-lint-action` to v9 (golangci-lint binary v2.12.2) in CI and release workflows
+- Added `renovate.json` for automated dependency update PRs
+- Added `#nosec G703` annotations in `readme_links.go` for path-traversal false positives on user-provided repo roots
 
 ## v0.2.0 - 2026-02-21
 

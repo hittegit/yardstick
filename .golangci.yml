@@ -1,37 +1,33 @@
 ---
+version: "2"
+
 run:
   timeout: 3m
-  tests: true
 
 linters:
   enable:
     - govet
     - staticcheck
     - ineffassign
-    - gosimple
-    - unused
     - errcheck
-    - typecheck
     - gocritic
     - revive
     - misspell
     - gosec
   disable:
     - depguard
-
-linters-settings:
-  revive:
-    severity: warning
-    rules:
-      - name: exported
-        disabled: true
-  misspell:
-    locale: US
-  gosec:
-    excludes:
-      - G306  # Allow file perms set explicitly in controlled scaffolding
+  settings:
+    revive:
+      severity: warning
+      rules:
+        - name: exported
+          disabled: true
+    misspell:
+      locale: US
+    gosec:
+      excludes:
+        - G306  # Allow file perms set explicitly in controlled scaffolding
 
 issues:
-  exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0

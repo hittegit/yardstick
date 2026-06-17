@@ -1,3 +1,3 @@
 module github.com/hittegit/yardstick
 
-go 1.22
+go 1.26

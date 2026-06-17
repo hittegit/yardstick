@@ -19,7 +19,7 @@ Yardstick runs a fast set of repository hygiene checks and renders machine or hu
 
 ## Installation
 
-You need Go 1.22 or newer.
+You need Go 1.26 or newer.
 
 - From source in this repo
 
@@ -36,7 +36,7 @@ go build -o yardstick .
 
 ```bash
 # Installs the yardstick binary into your GOPATH/bin or GOBIN
-GO111MODULE=on go install github.com/hittegit/yardstick@v0.2.0
+GO111MODULE=on go install github.com/hittegit/yardstick@v0.5.0
 yardstick -h
 ```
 
@@ -154,14 +154,14 @@ jobs:
   yardstick:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-go@v6
         with:
-          go-version: '1.22.x'
+          go-version: '1.26.x'
 
       - name: Install pinned yardstick release
-        run: go install github.com/hittegit/yardstick@v0.2.0
+        run: go install github.com/hittegit/yardstick@v0.5.0
 
       - name: Run yardstick and save JSON report
         run: |
@@ -180,7 +180,7 @@ To fail on warnings too, either:
 
 ## Local Development
 
-- Prerequisites: Go 1.22, a shell, and git
+- Prerequisites: Go 1.26, a shell, and git
 - Repo layout
   - `main.go`: CLI entry point
   - `internal/checks`: Check types and built in checks
